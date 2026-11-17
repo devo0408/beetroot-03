@@ -29,3 +29,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
         adc_ready = 1;
     }
 }
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    if (htim->Instance == TIM2 && adc_ready) {
+        light_sensor_measurement();
+    }
+}
