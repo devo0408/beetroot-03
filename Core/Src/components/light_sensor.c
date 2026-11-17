@@ -17,8 +17,8 @@ void light_sensor_init(ADC_HandleTypeDef* adc_handle_type_def) {
 
 void light_sensor_measurement(void)
 {
-    HAL_ADC_Start_IT(adc);
     adc_ready = 0;
+    HAL_ADC_Start_IT(adc);
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
@@ -31,7 +31,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-    if (htim->Instance == TIM2 && adc_ready) {
+    if (htim->Instance == TIM2) {
         light_sensor_measurement();
     }
 }
