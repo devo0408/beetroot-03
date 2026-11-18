@@ -8,6 +8,8 @@
 #include "main.h"
 
 #define LIGHT_SENSOR_SMA_WINDOW 8U
+#define LIGHT_SENSOR_VREF_MV    VDD_VALUE  /* ADC reference voltage in mV */
+#define LIGHT_SENSOR_ADC_MAX    4095U      /* 12-bit ADC full scale */
 
 void light_sensor_init(ADC_HandleTypeDef *hadc);
 
