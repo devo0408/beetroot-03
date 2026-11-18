@@ -7,6 +7,8 @@
 
 #include "main.h"
 
+#define LIGHT_SENSOR_SMA_WINDOW 8U
+
 void light_sensor_init(ADC_HandleTypeDef *hadc);
 
 void light_sensor_measurement(void);

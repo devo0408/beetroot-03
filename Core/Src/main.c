@@ -32,6 +32,12 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+/* Filtered ADC thresholds (12-bit, 0..4095). Higher value = darker.
+ * The gap between them is hysteresis, so the LED does not flicker
+ * when the light level sits near a single threshold.
+ */
+#define LIGHT_DARK_THRESHOLD    2500U  /* above this -> dark, LED on   */
+#define LIGHT_BRIGHT_THRESHOLD  2200U  /* below this -> light, LED off */
 
 /* USER CODE END PD */
 
@@ -104,8 +110,24 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint8_t led_on = 0;
+  uint32_t light_filtered;
+
   while (1)
   {
+    // if (light_sensor_read_filtered(&light_filtered))
+    // {
+    //   if (!led_on && light_filtered >= LIGHT_DARK_THRESHOLD)
+    //   {
+    //     led_on = 1;
+    //     HAL_GPIO_WritePin(LED_RESULT_GPIO_Port, LED_RESULT_Pin, GPIO_PIN_SET);
+    //   }
+    //   else if (led_on && light_filtered <= LIGHT_BRIGHT_THRESHOLD)
+    //   {
+    //     led_on = 0;
+    //     HAL_GPIO_WritePin(LED_RESULT_GPIO_Port, LED_RESULT_Pin, GPIO_PIN_RESET);
+    //   }
+    // }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
