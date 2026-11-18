@@ -110,24 +110,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  uint8_t led_on = 0;
-  uint32_t light_filtered;
-
   while (1)
   {
-    // if (light_sensor_read_filtered(&light_filtered))
-    // {
-    //   if (!led_on && light_filtered >= LIGHT_DARK_THRESHOLD)
-    //   {
-    //     led_on = 1;
-    //     HAL_GPIO_WritePin(LED_RESULT_GPIO_Port, LED_RESULT_Pin, GPIO_PIN_SET);
-    //   }
-    //   else if (led_on && light_filtered <= LIGHT_BRIGHT_THRESHOLD)
-    //   {
-    //     led_on = 0;
-    //     HAL_GPIO_WritePin(LED_RESULT_GPIO_Port, LED_RESULT_Pin, GPIO_PIN_RESET);
-    //   }
-    // }
+    if (adc_ready)
+    {
+      if (adc_value >= LIGHT_DARK_THRESHOLD)
+      {
+        HAL_GPIO_WritePin(LED_RESULT_GPIO_Port, LED_RESULT_Pin, GPIO_PIN_SET);
+      }
+      else if (adc_value <= LIGHT_BRIGHT_THRESHOLD)
+      {
+        HAL_GPIO_WritePin(LED_RESULT_GPIO_Port, LED_RESULT_Pin, GPIO_PIN_RESET);
+      }
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

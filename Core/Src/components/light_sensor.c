@@ -52,12 +52,6 @@ void light_sensor_measurement(void)
     HAL_ADC_Start_IT(adc);
 }
 
-// static uint32_t light_sensor_to_mv(uint32_t raw)
-// {
-//     // Multiply first so integer division does not lose precision
-//     return (raw * LIGHT_SENSOR_VREF_MV) / LIGHT_SENSOR_ADC_MAX;
-// }
-
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
     if (hadc->Instance == ADC1)
