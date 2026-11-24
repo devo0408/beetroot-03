@@ -61,9 +61,6 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static uint16_t adc_buf[2];          // [0] = IN1, [1] = VREFINT
-static volatile uint8_t adc_done = 0;
-
 typedef struct {
   uint16_t raw;
   uint16_t vrefint_raw;
@@ -72,6 +69,10 @@ typedef struct {
   float    v_cal;   // калібрована
   float    err_pct; // похибка, %
 } adc_sample_t;
+static volatile adc_sample_t actual_sample;
+
+static uint16_t adc_buf[2];          // [0] = IN1, [1] = VREFINT
+static volatile uint8_t adc_done = 0;
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
@@ -139,8 +140,8 @@ int main(void)
       float v_cal = raw * vdda / 4095;
       float err_pct = (v_raw - v_cal) / v_cal * 100;
 
-      adc_sample_t sample = {
-        .raw = v_raw,
+      actual_sample = (adc_sample_t){
+        .raw = raw,
         .vrefint_raw = vrefint_raw,
         .v_raw = v_raw,
         .vdda = vdda,
