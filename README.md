@@ -1,4 +1,4 @@
-# Task 3.2 — ADC + potentiometer (STM32F411CEU6)
+# Task 3.2 — ADC + potentiometer
 
 ## Task
 
