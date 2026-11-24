@@ -61,22 +61,25 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-//
-// volatile uint16_t adc_raw = 0;    // 0..4095
-// volatile uint16_t adc_mv  = 0;    // 0..3300
-// volatile uint8_t  adc_ready = 0;
+static uint16_t adc_buf[2];          // [0] = IN1, [1] = VREFINT
+static volatile uint8_t adc_done = 0;
 
-// void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
-// {
-//   if (hadc->Instance == ADC1)
-//   {
-//     uint32_t raw = HAL_ADC_GetValue(hadc);   // read result, clears EOC
-//
-//     adc_raw = (uint16_t)raw;
-//     adc_mv  = (uint16_t)((raw * 3300U) / 4095U);
-//     adc_ready = 1;
-//   }
-// }
+typedef struct {
+  uint16_t raw;
+  uint16_t vrefint_raw;
+  float    v_raw;   // за формулою з 3.3 В
+  float    vdda;    // реальна VDDA
+  float    v_cal;   // калібрована
+  float    err_pct; // похибка, %
+} adc_sample_t;
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+  if (hadc->Instance == ADC1)
+  {
+    adc_done = 1;
+  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -117,8 +120,34 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint32_t t_last = 0;
+  uint16_t vrefint_cal = *VREFINT_CAL_ADDR;
+
   while (1)
   {
+    if (HAL_GetTick() - t_last >= 100) {
+      t_last += 100;
+      HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_buf, 2);
+    }
+    if (adc_done) {
+      adc_done = 0;
+
+      uint16_t raw = adc_buf[0];
+      uint16_t vrefint_raw = adc_buf[1];
+      float v_raw =  raw * 3.3 / 4095;
+      float vdda = 3.3 * vrefint_cal / vrefint_raw;
+      float v_cal = raw * vdda / 4095;
+      float err_pct = (v_raw - v_cal) / v_cal * 100;
+
+      adc_sample_t sample = {
+        .raw = v_raw,
+        .vrefint_raw = vrefint_raw,
+        .v_raw = v_raw,
+        .vdda = vdda,
+        .v_cal = v_cal,
+        .err_pct = err_pct
+      };
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
