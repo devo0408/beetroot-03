@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -148,6 +148,14 @@ int main(void)
         .v_cal = v_cal,
         .err_pct = err_pct
       };
+
+      char msg[128];
+      int len = snprintf(msg, sizeof msg,
+          "raw=%u vref=%u v_raw=%.3f vdda=%.3f v_cal=%.3f err=%.2f%%\r\n",
+          actual_sample.raw, actual_sample.vrefint_raw,
+          actual_sample.v_raw, actual_sample.vdda,
+          actual_sample.v_cal, actual_sample.err_pct);
+      HAL_UART_Transmit(&huart1, (uint8_t *)msg, len, HAL_MAX_DELAY);
     }
     /* USER CODE END WHILE */
 
